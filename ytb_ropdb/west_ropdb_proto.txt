@@ -1,0 +1,54 @@
+# format : ("ROP_GADGET_NAME", addr, word_size)
+# format : ("ROP_GADGET_NAME", addr, (word_size, word_skip_size, word_size))
+# format : ("APP_CONSTANT_PTR", pattern_addr, pattern_word_size, value_words_offset)
+# format : ("ROP_GADGET_NAME", addr, (word_size, word_skip_size, word_size), value_words_offset)
+[
+	# pop gadgets
+	("YTB_ROP_NOP", 0x0012d444, 0x1), # pop {pc}
+	("YTB_ROP_POP_R0PC", 0x0013b358, 0x1), # pop {r0, pc}
+	("YTB_ROP_POP_R1PC", 0x0034c2f8, 0x1), # pop {r1, pc}
+	("YTB_ROP_POP_R4LR_BX_R1", 0x0034e3d8, 0x2), # pop {r4, lr} | bx r1
+	("YTB_ROP_POP_R4R5PC", 0x00433754, 0x1), # pop {r4, r5, pc}
+	("YTB_ROP_POP_R3PC", 0x0022a420, 0x1), # pop {r3, pc}
+	("YTB_ROP_POP_R4PC", 0x0012bca4, 0x1), # pop {r4, pc}
+	("YTB_ROP_POP_R2R3R4R5R6PC", 0x00348e88, 0x1), # pop {r2, r3, r4, r5, r6, pc}
+	("YTB_ROP_POP_R4R5R6R7R8R9R10R11PC", 0x00131198, 0x1), # pop {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+	("YTB_ROP_POP_R4R5R6R7R8R9R10R11R12PC", 0x001331b0, 0x1), # pop {r4, r5, r6, r7, r8, r9, sl, fp, ip, pc}
+	("YTB_ROP_BLX_R4_ADD_SPx10_POP_R4PC", 0x001673a4, 0x3), # blx r4 ; add sp, sp, #16 ; pop {r4, pc}
+
+	("YTB_ROP_STR_R0R1_POP_R4PC", 0x0012bca0, 0x2), # str r0, [r1] ; pop {r4, pc}
+	("YTB_ROP_STR_R0R4_POP_R4PC", 0x001306ac, 0x2), # str r0, [r4] ; pop {r4, pc}
+	("YTB_ROP_STM_R4R0R1_POP_R4_PC", 0x001fb254, 0x2), # stm r4, {r0, r1} ; pop {r4, pc}
+	("YTB_ROP_STM_R0R1R2_POP_R4_PC", 0x003599a0, 0x2), # stm r4, {r1, r2} ; pop {r4, pc}
+	("YTB_ROP_LDR_R1R1_BLX_R3", 0x0016e644, 0x2), # ldr r1, [r1] ; blx r3
+
+	("YTB_ROP_LDR_R2R1_ADD_R1SPx4_BLX_R3", 0x0017786c, 0x3), # ldr r2, [r1] ; add r1, sp, #4 ; blx r3
+
+	("YTB_ROP_LDR_R0R0_POP_R4PC", 0x00168910, 0x2), # ldr r0, [r0] ; pop {r4, pc}
+
+	("YTB_ROP_MRC_R0C13C03_ADD_R0R0x5C_BX_LR", 0x001390f4, 0x3), # mrc 15, 0, r0, cr13, cr0, {3} ; add r0, r0, #0x5c ; bx lr
+
+	("YTB_ROP_ADD_R0R0R4_POP_R4PC", 0x003107dc, 0x2), # add r0, r0, r4 ; pop {r4, pc}
+
+	("YTB_HTTPC_STRUCT", 0x0020D6D4, 0x10, 0x46), # + 0x4 : bool enabled (SBS), + 0x2C : http:C handle
+	("YTB_APT_HANDLE", 0x0012E1E0, (0x8, 0x1, 0x5), 0xe),
+	("YTB_GSPGPU_INTERRUPT_RECEIVER_STRUCT", 0x0020E4F8, (0x4, 0x12, 0x1, 0x1, 0x2), 0x20),
+	("YTB_GSPGPU_HANDLE", 0x0020E4F8, (0x4, 0x12, 0x1, 0x1, 0x2), 0x1f),
+	("YTB_DSP_HANDLE", 0x0012D938, (0x3, 0x1, 0x4, 0x1, 0x3, 0x2, 0xa), 0x26),
+
+	("YTB_SVC_SLEEPTHREAD", 0x00342ebc, 0x2), # svc 0xa
+	("YTB_SVC_SETTHREADPRIORITY", 0x0034af34, 0x2), # svc 0xc
+	("YTB_SVC_SENDSYNCEST", 0x00344cc4, 0x2), # svc 0x32
+	("YTB_MEMCPY", 0x0034b098, 0x10),
+	("YTB_HTTPC_INITIALIZE", 0x00216230, 0xA), # r0 : handle ptr, r1 : 0x0 ?, r2 : 0x1000, r3 : 0x0 ?
+	("YTB_HTTPC_RECEIVEDATA", 0x0020e108, 0xA), # r0 : handle ptr, r1 : httpc context handle, r2 : buffer address, r3 : buffer size
+	("YTB_HTTPC_CREATECONTEXTWRAPPER", 0x0020d6d4, 0x7), # r0 : context struct (0x4 : SBZ context handle slot, 0x8 : SBZ context http:C handle slot, 0xC : same as 0x8), r1 : url ptr, r2 ":( ",est method,), r3 : bool use_proxy# HTTPC_STRUCT + 0x4 SBS, HTTPC_STRUCT + 0x2c = http:C handle
+	("YTB_APT_ISREGISTERED", 0x003439B8, (0x8, 0x1, 0x7)), # r0 : appId, r1 : out_ptr
+	("YTB_SRV_GETSERVICEHANDLEWRAPPER", 0x00344cfc, (0x1, 0x1, 0x6, 0x1, 0x1)), # r0 : out ptr, r1 : service name ptr, r2 : service name length, r3 : 0
+	("YTB_GSPGPU_FLUSHDATACACHE", 0x0020f14c, (0x9, 0x1, 0x5)),
+	("YTB_GSPGPU_GXTRYENQUEUE", 0x002FBA28, 0x10),
+	("YTB_GSPGPU_GXCMD4", 0x0020E91C, 0xC),
+	("YTB_GSPGPU_FLUSHDATACACHE_WRAPPER", 0x0020E820, (0x5, 0x1, 0x4)),
+	("YTB_DSP_UNLOADCOMPONENT", 0x001369A4, 0x5),
+	("YTB_DSP_REGISTERINTERRUPTEVENTS", 0x00136A38, (0x9, 0x1, 0x5)),
+]

