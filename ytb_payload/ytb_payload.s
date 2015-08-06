@@ -79,7 +79,7 @@ PAYLOAD_LOC equ PAYLOAD_PRIM_LOC
 
 	.align 0x4
 	payload_secondary:
-		.incbin "youtube_payload_secondary.bin"
+		.incbin "../build/ytb_rop.bin"
 	payload_secondary_end:
 
 .Close

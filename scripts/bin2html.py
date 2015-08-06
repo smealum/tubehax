@@ -32,6 +32,8 @@ if tiled:
 	for y in range(0,h,8):
 		for x in range(0,w,8):
 			for k in range(8*8):
+				if o >= len(payload):
+					sys.exit()
 				i = tileOrder[k] % 8
 				j = int((tileOrder[k]-i) / 8)
 				# i = k % 8

@@ -42,6 +42,16 @@ if "FIRM_VERSION" in l and l["FIRM_VERSION"] == "NEW":
 	l["FIRM_SYSTEM_LINEAR_OFFSET"] = "0x07C00000"
 else:
 	l["FIRM_SYSTEM_LINEAR_OFFSET"] = "0x04000000"
+
+if "YTB_VERSION" in l and l["YTB_VERSION"] == "west":
+	l["YTB_VIRTUAL_TRAMPOLINE"] = "0x00bc07f8"
+	l["YTB_STACK_PIVOT"] = "0x00100d84" # ldmda r4!, {r2, r3, r6, r9, ip, sp, lr, pc}
+	l["YTB_STACK_PIVOT2"] = "0x00119b84" # ldm r10!, {r4, r5, r9, r12, sp, lr, pc}
+else:
+	# JPN
+	l["YTB_VIRTUAL_TRAMPOLINE"] = "0x00bbf7f8"
+	l["YTB_STACK_PIVOT"] = "0x00100d84" # ldmda r4, {r2, r3, r6, r9, ip, sp, lr, pc} (not a typo, the ! is the only difference with WEST)
+	l["YTB_STACK_PIVOT2"] = "0x0010d8b4" # ldm r8!, {r8, ip, sp, lr, pc}
 	
 l["IRON_CODE_LINEAR_BASE"] = "(0x30000000 + FIRM_SYSTEM_LINEAR_OFFSET - 0x00200000)"
 

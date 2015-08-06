@@ -38,7 +38,7 @@
 
 	("YTB_SVC_SLEEPTHREAD", 0x00342ebc, 0x2), # svc 0xa
 	("YTB_SVC_SETTHREADPRIORITY", 0x0034af34, 0x2), # svc 0xc
-	("YTB_SVC_SENDSYNCEST", 0x00344cc4, 0x2), # svc 0x32
+	("YTB_SVC_SENDSYNCREQUEST", 0x00344cc4, 0x2), # svc 0x32
 	("YTB_MEMCPY", 0x0034b098, 0x10),
 	("YTB_HTTPC_INITIALIZE", 0x00216230, 0xA), # r0 : handle ptr, r1 : 0x0 ?, r2 : 0x1000, r3 : 0x0 ?
 	("YTB_HTTPC_RECEIVEDATA", 0x0020e108, 0xA), # r0 : handle ptr, r1 : httpc context handle, r2 : buffer address, r3 : buffer size

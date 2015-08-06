@@ -2,16 +2,7 @@ PAYLOAD_PRIM_LOC equ 0x1f05DC00
 PAYLOAD_SEC_LOC equ 0x15000000
 PAYLOAD_THIRD_LOC equ 0x15100000
 
-; west
-.if YTB_VERSION == "WEST"
-	YTB_VIRTUAL_TRAMPOLINE equ 0x00bc07f8
-	YTB_STACK_PIVOT equ 0x00100d84 ; ldmda r4!, {r2, r3, r6, r9, ip, sp, lr, pc}
-	YTB_STACK_PIVOT2 equ 0x00119b84 ; ldm r10!, {r4, r5, r9, r12, sp, lr, pc}
-.else
-	YTB_VIRTUAL_TRAMPOLINE equ 0x00bbf7f8
-	YTB_STACK_PIVOT equ 0x00100d84 ; ldmda r4, {r2, r3, r6, r9, ip, sp, lr, pc} (not a typo, the ! is the only difference with WEST)
-	YTB_STACK_PIVOT2 equ 0x0010d8b4 ; ldm r8!, {r8, ip, sp, lr, pc}
-.endif
+.include "../build/constants.s"
 
 YTB_HTTPC_HANDLE equ (YTB_HTTPC_STRUCT + 0x2C)
 

