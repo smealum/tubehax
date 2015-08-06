@@ -50,9 +50,11 @@ PARAMBLK_LOC equ (PAYLOAD_LOC + paramblk)
 		httpcSecondHandle:
 		.word 0x00000000
 		.word 0x00000000
+
+.orga 0x600
 	payloadUrl:
-		.ascii "http://m.youtube.com/sec_payload.bin"
-		.byte 0x00
+		; .ascii "http://m.youtube.com/sec_payload.bin"
+		; .byte 0x00
 
 .fill (0x800 - .), 0xff
 	paramblk:

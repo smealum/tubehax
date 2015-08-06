@@ -7,7 +7,7 @@ ROPDB_TARGET = ytb_ropdb/$(YTB_VERSION)_ropdb.txt
 
 PAYLOAD_NAME = $(FIRM_VERSION)_$(YTB_VERSION)_payload.html
 
-WEB_TARGETS = web/index.php web/frame.html web/payloads/$(PAYLOAD_NAME)
+WEB_TARGETS = web/index.php web/hax.php web/frame.html web/version.html web/payloads/$(PAYLOAD_NAME)
 
 SCRIPTS = "scripts"
 
@@ -29,9 +29,9 @@ build/constants: ytb_ropdb/ropdb.txt
 
 web/payloads/$(PAYLOAD_NAME): build/ytb_payload.bin
 	@python scripts/bin2html.py ytb_payload/ytb_payload.bin > $@
-web/index.php: ytb_page/index.php
+web/%.php: ytb_page/%.php
 	@cp $< $@
-web/frame.html: ytb_page/frame.html
+web/%.html: ytb_page/%.html
 	@cp $< $@
 
 

