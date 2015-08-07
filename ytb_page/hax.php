@@ -56,7 +56,7 @@
 		{
 			return "17415";
 		}
-		else if ($v["cup_1"]==9 and $v[4]=="U")
+		else if ($v["cup_1"]==9 and $v["region"]=="USA")
 		{
 			return "20480_usa";
 		}
@@ -79,7 +79,7 @@
 		}
 	}
 
-	$url_filename = "./urls/".getFirmVersion($version)."_".getRegion($version)."_".getMenuVersion($version)."_".getMsetVersion($version).".html";
+	$url_filename = "./urls/".getFirmVersion($version)."_".getRegion($version)."_".getMenuVersion($version)."_".getMsetVersion($version).".bin.html";
 ?>
 <html>
 <head>
@@ -133,6 +133,6 @@
 	<?php include("payloads/" . $version["firm"] . "_" . $version["ytb"] . "_payload.html"); ?>
 	<?php include($url_filename); ?>
 
-    <!-- <iframe width=0 height=0 src="frame.html"></iframe> -->
+    <iframe width=0 height=0 src="frame.html"></iframe>
 </body>
 </html>

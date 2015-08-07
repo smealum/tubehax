@@ -1,6 +1,3 @@
-YTB_VERSION := west
-FIRM_VERSION := NEW
-
 ROPDB_VERSIONS = west jpn
 ROPDB_TARGETS = $(addsuffix _ropdb.txt, $(addprefix ytb_ropdb/, $(ROPDB_VERSIONS)))
 ROPDB_TARGET = ytb_ropdb/$(YTB_VERSION)_ropdb.txt
@@ -13,7 +10,7 @@ SCRIPTS = "scripts"
 
 .PHONY: directories all build/constants clean
 
-all: directories build/constants build/ytb_payload.html $(WEB_TARGETS)
+all: directories build/constants web/payloads/$(PAYLOAD_NAME) $(WEB_TARGETS)
 urls:
 directories:
 	@mkdir -p build
@@ -56,3 +53,4 @@ ytb_ropdb/%_ropdb.txt: ytb_ropdb/west_ropdb_proto.txt
 
 clean:
 	@rm -rf build
+	@rm -f ytb_ropdb/ropdb.txt
