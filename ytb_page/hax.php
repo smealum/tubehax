@@ -1,86 +1,3 @@
-<?php
-	// prepare version for web payload
-	if($version["model"] == "OLD")$version["firm"] = "OLD";
-	else $version["firm"] = "NEW";
-	if($version["region"] == "EUR" || $version["region"] == "USA") $version["ytb"] = "west";
-	else $version["ytb"] = "jpn";
-
-	// compute otherapp payload nme
-	function getRegion($v)
-	{
-		if($v["region"]=="JPN")
-		{
-			return "J";
-		}else if($v["region"]=="EUR")
-		{
-			return "E";
-		}else if($v["region"]=="USA")
-		{
-			return "U";
-		}
-	}
-
-	function getFirmVersion($v)
-	{
-		if($v["model"]=="NEW")
-		{
-			return "N3DS";
-		}else{
-			return "POST5";
-		}
-	}
-
-	function getMenuVersion($v)
-	{
-		if ($v["cup_1"]==0 or $v["cup_1"]==1)
-		{
-			return "11272";
-		}
-		else if ($v["cup_1"]==2)
-		{
-			return "12288";
-		}
-		else if (($v["cup_1"]==3 or $v["cup_1"]==4))
-		{
-			return "13330";
-		}
-		else if ($v["cup_1"]==5)
-		{
-			return "15360";
-		}
-		else if ($v["cup_1"]==6)
-		{
-			return "16404";
-		}
-		else if ($v["cup_1"]==7)
-		{
-			return "17415";
-		}
-		else if ($v["cup_1"]==9 and $v["region"]=="USA")
-		{
-			return "20480_usa";
-		}
-		else if ($v["cup_1"]>=8)
-		{
-			return "19456";
-		}
-	}
-
-
-	function getMsetVersion($v)
-	{
-		if($v["cup_0"] == 9 and $v["cup_1"] < 6)
-		{
-			return "8203";
-		}
-		else
-		{
-			return "9221";
-		}
-	}
-
-	$url_filename = "./urls/".getFirmVersion($version)."_".getRegion($version)."_".getMenuVersion($version)."_".getMsetVersion($version).".bin.html";
-?>
 <html>
 <head>
 <style>
@@ -119,7 +36,7 @@
 		}
 
 		function dsm(evnt) {
-			for (var j = 0; j < 100; j++) {
+			for (var j = 0; j < 400; j++) {
 				magicfun(mem, 200, data);
 			}
 		}

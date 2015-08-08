@@ -11,7 +11,7 @@ def val2pixel(val):
 
 def putPixel(x, y, val):
 	if val != 0xFFFF:
-		return '<div class="pxl" style="left: '+str(y)+'px; top: '+str(239-x)+'px; background-color: '+val2pixel(val)+';"></div>'
+		return '<div class="pxl" style="left: '+str(y)+'px; top: '+str(239-x)+'px; background-color: '+val2pixel(val)+';"></div>\n'
 	else:
 		return ""
 
@@ -36,13 +36,13 @@ def do_convert(payload, offset = 0, tiled = True):
 						j = int((tileOrder[k]-i) / 8)
 						# i = k % 8
 						# j = int((k-i) / 8)
-						ret += putPixel(x+i, y+j, payload[o - offset]) + "\n"
+						ret += putPixel(x+i, y+j, payload[o - offset])
 					o += 1
 	else:
 		for i in range(len(payload)):
 			x = i % 240;
 			y = int((i - x) / 240);
-			ret += putPixel(x, y, payload[i]) + "\n"
+			ret += putPixel(x, y, payload[i])
 	return ret
 
 if __name__ == '__main__':

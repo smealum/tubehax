@@ -230,3 +230,41 @@ YTB_HTTPC_HANDLE equ (YTB_HTTPC_STRUCT + 0x2C)
 		.word 0x00000000
 		@@cmdBuf_end:
 .endmacro
+
+.macro fopen,f,name,flags
+	set_lr YTB_ROP_NOP
+	.word YTB_ROP_POP_R0PC
+		.word f
+	.word YTB_ROP_POP_R1PC
+		.word name
+	.word YTB_ROP_POP_R2R3R4R5R6PC
+		.word flags ; r2
+		.word 0xFFFFFFFF ; r3
+		.word 0xFFFFFFFF ; r4
+		.word 0xFFFFFFFF ; r5
+		.word 0xFFFFFFFF ; r6
+	.word YTB_OPENFILE
+.endmacro
+
+.macro fwrite,f,bytes_written,data,size,flush
+	set_lr YTB_ROP_POP_R1PC
+	.word YTB_ROP_POP_R0PC
+		.word f
+	.word YTB_ROP_POP_R1PC
+		.word bytes_written ; bytes written
+	.word YTB_ROP_POP_R2R3R4R5R6PC
+		.word data ; r2
+		.word size ; r3
+		.word 0xFFFFFFFF ; r4
+		.word 0xFFFFFFFF ; r5
+		.word 0xFFFFFFFF ; r6
+	.word YTB_WRITEFILE
+		.word flush
+.endmacro
+
+.macro control_archive,archive
+	set_lr YTB_ROP_NOP
+	.word YTB_ROP_POP_R0PC
+		.word archive
+	.word YTB_CONTROLARCHIVE
+.endmacro
