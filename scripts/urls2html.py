@@ -19,6 +19,6 @@ path = sys.argv[2]
 
 for url in open(sys.argv[1], "r").readlines():
 	url = url.rstrip()
-	out = convert_url("http://m.youtube.com/otherapp/" + url + ".bin") + "\n"
+	out = convert_url("http://smealum.github.io/ninjhax2/Pvl9iD2Im5/otherapp/" + url + ".bin") + "\n"
 	out += convert_cookie(".m.youtube.com	TRUE	/	FALSE	0	value	" + url)
 	open(path + "/" + url + ".html", "w").write(out)
