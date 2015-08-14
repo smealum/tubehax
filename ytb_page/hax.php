@@ -14,6 +14,11 @@
 </style>
 </head>
 <body>
+	<form action="" method="POST">
+		<input type="hidden" name="version" value="">
+		<button type="submit" style="position: absolute; left: 170px; top: 5px;">Change firmware version</button>
+	</form>
+
 	<script>
 	    var mem = [];
 
@@ -36,7 +41,7 @@
 		}
 
 		function dsm(evnt) {
-			for (var j = 0; j < 400; j++) {
+			for (var j = 0; j < 600; j++) {
 				magicfun(mem, 200, data);
 			}
 		}

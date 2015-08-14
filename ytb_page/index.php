@@ -78,9 +78,12 @@
 
 	if(isset($_POST["version"]))
 	{
-		$v = explode(" ", $_POST["version"]);
-		$version = array("model" => $v[0], "cup_0" => $v[1], "cup_1" => $v[2], "cup_2" => $v[3], "region" => $v[4]);
-		$version_name = getFirmVersion($version)."_".getRegion($version)."_".getMenuVersion($version)."_".getMsetVersion($version);
+		if(strlen($_POST["version"]) > 2)
+		{
+			$v = explode(" ", $_POST["version"]);
+			$version = array("model" => $v[0], "cup_0" => $v[1], "cup_1" => $v[2], "cup_2" => $v[3], "region" => $v[4]);
+			$version_name = getFirmVersion($version)."_".getRegion($version)."_".getMenuVersion($version)."_".getMsetVersion($version);
+		}
 	}else if(isset($_COOKIE[$cookie_name])){
 		$version_name = $_COOKIE[$cookie_name];
 	}

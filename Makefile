@@ -4,14 +4,15 @@ ROPDB_TARGET = ytb_ropdb/$(YTB_VERSION)_ropdb.txt
 
 PAYLOAD_NAME = $(FIRM_VERSION)_$(YTB_VERSION)_payload.html
 
-WEB_TARGETS = web/index.php web/hax.php web/frame.html web/version.html web/payloads/$(PAYLOAD_NAME)
+WEB_TARGETS = web/index.php web/hax.php web/frame.html web/version.html web/payloads/$(PAYLOAD_NAME) web/urls
 
 SCRIPTS = "scripts"
 
 .PHONY: directories all build/constants clean
 
 all: directories build/constants web/payloads/$(PAYLOAD_NAME) $(WEB_TARGETS)
-urls:
+web/urls:
+	@python scripts/urls2html.py urls.txt web/urls/
 directories:
 	@mkdir -p build
 	@mkdir -p web
