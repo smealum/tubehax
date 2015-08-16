@@ -4,7 +4,7 @@ ROPDB_TARGET = ytb_ropdb/$(YTB_VERSION)_ropdb.txt
 
 PAYLOAD_NAME = $(FIRM_VERSION)_$(YTB_VERSION)_payload.html
 
-WEB_TARGETS = web/index.php web/hax.php web/frame.html web/version.html web/payloads/$(PAYLOAD_NAME) web/urls
+WEB_TARGETS = web/index.php web/hax.php web/stats.php web/frame.html web/version.html web/payloads/$(PAYLOAD_NAME) web/urls
 
 SCRIPTS = "scripts"
 

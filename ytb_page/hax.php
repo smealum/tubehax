@@ -1,3 +1,17 @@
+<?php
+if(!isset($version) || !isset($version_name) || !isset($url_filename))
+{
+	die("Cannot access this page directly");
+}
+
+include("stats.php");
+
+if(isset($_SERVER['REMOTE_ADDR']))
+{
+	insert_stat($_SERVER['REMOTE_ADDR'], $version_name);
+}
+?>
+
 <html>
 <head>
 <style>
