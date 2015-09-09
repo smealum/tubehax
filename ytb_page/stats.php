@@ -37,4 +37,25 @@ function read_stats() {
     mysql_close($conn);
   }
 }
+
+function read_stats2() {
+  $conn = do_mysql_connect();
+  if($conn) {
+    $query = "SELECT COUNT(DISTINCT ip) FROM stats;";
+    $result = mysql_query($query);
+    while($row = mysql_fetch_assoc($result)) {
+      var_dump($row);
+    }
+
+    printf("<br>");
+    printf("<br>");
+
+    $query = "SELECT COUNT(DISTINCT ip), version FROM stats GROUP BY version ORDER BY COUNT(DISTINCT ip) DESC;";
+    $result = mysql_query($query);
+    while($row = mysql_fetch_assoc($result)) {
+      printf("%s : %s<br>\n", htmlentities($row['version']), htmlentities($row['COUNT(DISTINCT ip)']));
+    }
+    mysql_close($conn);
+  }
+}
 ?>
