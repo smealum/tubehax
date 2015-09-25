@@ -36,9 +36,13 @@
 			{
 				return "12288";
 			}
-			else if (($v["cup_1"]==3 or $v["cup_1"]==4))
+			else if ($v["cup_1"]==3)
 			{
 				return "13330";
+			}
+			else if ($v["cup_1"]==4)
+			{
+				return "14336";
 			}
 			else if ($v["cup_1"]==5)
 			{
