@@ -11,6 +11,7 @@ def convert_url(url):
 
 def convert_cookie(cookie):
 	cookie = bytes(cookie, "ascii")
+	cookie += bytearray([0xA])
 	cookie += bytearray([0] * (2 - (len(cookie) % 2))) # pads to u16 and adds an extra null byte if necessary
 	cookie = struct.unpack("<%dH" % (len(cookie) // 2), cookie)
 	return bin2html.do_convert(cookie, offset = 0x700 + 0x300)

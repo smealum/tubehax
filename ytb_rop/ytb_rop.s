@@ -89,6 +89,7 @@ YTB_COOKIES_FILEOBJECT equ (PAYLOAD_SEC_LOC + cookie_obj)
 .orga 0x600
 	payloadUrl:
 		; .ascii "http://m.youtube.com/sec_payload.bin"
+		; .byte 0x0A
 		; .byte 0x00
 
 .orga 0x700
